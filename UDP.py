@@ -5,8 +5,8 @@ import sys
 import socket
 import time
 seconds = 0.5
-
-fs, data = wavfile.read('C:/Users/Cursos/Documents/acch/SEBMII/sitar_mono_16bit_44100.wav')
+fs, data = wavfile.read('C:/Users/edson/Downloads/Practica2-master/Practica2-master/sitar_mono_16bit_44100.wav')
+# fs, data = wavfile.read('C:/Users/Cursos/Documents/acch/SEBMII/sitar_mono_16bit_44100.wav')
 # fs, data = wavfile.read('C:/Users/Usuario/Downloads/sitar_mono_16bit_44100.wav')
 
 print(data)
@@ -45,9 +45,10 @@ data = data/16
 
 data2 = np.cast[np.int16](data)
 print(' %s Data-type of the array’s elements' %data2.dtype)
-for i in range(0, data2.shape[0]-1):
+# for i in range(0, data2.shape[0]-1):
+#     print(data2[i])
+for i in range(0, 30-1):
     print(data2[i])
-
 
 # var1 = str(data[data.shape[0]-1, 1])
 # print(var1.encode('utf-8'))
@@ -69,12 +70,11 @@ print(MESSAGE.encode('utf-8'))
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 while True:
     # print(1)
-    time.sleep(seconds)
     print(MESSAGE.encode('utf-8'))
     for i in range(0, data.shape[0]-1):
         sock.sendto(data[i], (UDP_IP, UDP_PORT))
+         # sock.sendto(MESSAGE.encode('utf-8'), (UDP_IP, UDP_PORT))
+         time.sleep(seconds)
+     
 
-            # time.sleep(seconds)
-
-    # sock.sendto(MESSAGE.encode('utf-8'), (UDP_IP, UDP_PORT))
 
