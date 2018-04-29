@@ -44,6 +44,8 @@ data = data+(65535/2)
 data = data/16
 
 data2 = np.cast[np.int16](data)
+print(len(data2))
+print(data2[10000:10005])
 print(' %s Data-type of the array’s elements' %data2.dtype)
 # for i in range(0, data2.shape[0]-1):
 #     print(data2[i])
@@ -77,4 +79,13 @@ while True:
          time.sleep(seconds)
      
 
+
+# while True:
+#     print(MESSAGE.encode('utf-8'))
+#     for i in range(len(data2)):
+#         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
+#         sock.connect((UDP_IP, UDP_PORT))
+#         sock.sendto(data[10000:10030], (UDP_IP, UDP_PORT))
+#         #sock.sendto(MESSAGE.encode('utf-8'), (UDP_IP, UDP_PORT))
+#         time.sleep(seconds)
 
