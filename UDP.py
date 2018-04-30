@@ -4,7 +4,7 @@ import numpy as np
 import sys
 import socket
 import time
-seconds = 0.5
+seconds = 0.1
 fs, data = wavfile.read('C:/Users/edson/Downloads/Practica2-master/Practica2-master/sitar_mono_16bit_44100.wav')
 # fs, data = wavfile.read('C:/Users/Cursos/Documents/acch/SEBMII/sitar_mono_16bit_44100.wav')
 # fs, data = wavfile.read('C:/Users/Usuario/Downloads/sitar_mono_16bit_44100.wav')
@@ -36,37 +36,26 @@ print('%d Total bytes consumed by the elements of the array' %data.nbytes)
 # for i in range(0, data.shape[0]-1):
 #     print(data[i])
 
-print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii cast iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
 
 
 data = data+(65535/2)
-
 data = data/16
-
 data2 = np.cast[np.int16](data)
-print(len(data2))
-print(data2[10000:10005])
+
+# print(len(data2))
+# print(data2[10000:10005])
 print(' %s Data-type of the array’s elements' %data2.dtype)
 # for i in range(0, data2.shape[0]-1):
 #     print(data2[i])
-for i in range(0, 30-1):
+for i in range(0, 10):
     print(data2[i])
 
-# var1 = str(data[data.shape[0]-1, 1])
-# print(var1.encode('utf-8'))
-#
-# var = str(data[data.shape[0]-2, 1])
-# print(var.encode('utf-8'))
-#
-# var2 = str(data)
-# print(var2.encode('utf-8'))
 
-
-UDP_IP = "148.201.215.14"
-
-UDP_PORT = 50005
-
+UDP_IP = "192.168.1.104"
+UDP_PORT = 54321
 MESSAGE = "Hello, World!"
+
 print(MESSAGE.encode('utf-8'))
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
