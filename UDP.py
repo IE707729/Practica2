@@ -4,7 +4,7 @@ import sys
 import socket
 import time
 
-seconds = 0.1
+seconds = 0.001
 fs, data = wavfile.read('C:/Users/edson/Downloads/Practica2-master/Practica2-master/sitar_mono_16bit_44100.wav')
 # fs, data = wavfile.read('C:/Users/Cursos/Documents/acch/SEBMII/sitar_mono_16bit_44100.wav')
 # fs, data = wavfile.read('C:/Users/Usuario/Downloads/sitar_mono_16bit_44100.wav')
@@ -40,7 +40,7 @@ print('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii cast iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii'
 
 data = data + (65535 / 2)
 data = data / 16
-data2 = np.cast[np.int16](data)
+data2 = np.cast[np.uint16](data)
 
 # print(len(data2))
 # print(data2[10000:10005])
@@ -52,29 +52,32 @@ for i in range(0, 10):
 
 UDP_IP = "192.168.1.104"
 UDP_PORT = 54321
-MESSAGE = "Hello, World!"
+# MESSAGE = "Hello, World!"
 
-print(MESSAGE.encode('utf-8'))
+# print(MESSAGE.encode('utf-8'))
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)  # UDP
 
 min = 0;
-max = 30;
+max = 31;
 cont = 1;
 while True:
     # print(1)
     #print(MESSAGE.encode('utf-8'))
 
-    if max <= data.size:
-        sock.sendto(data[min:max], (UDP_IP, UDP_PORT))
+    if max <= data2.size:
+        sock.sendto(data2[min:max], (UDP_IP, UDP_PORT))
         print(cont,min,max)
         min=max+1;
-        max=max+30;
-    elif ((min-1)-data.size) == 0:
-        break
+        max=max+31;
+        cont += 1
+
     else:
-        sock.sendto(data[min:data.size], (UDP_IP, UDP_PORT))
-    cont += 1
+        sock.sendto(data2[min:data2.size], (UDP_IP, UDP_PORT))
+        print(cont,min,data2.size )
+        min = 0;
+        max = 31;
+        cont = 1;
 
 
 
