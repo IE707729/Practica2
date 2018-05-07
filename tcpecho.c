@@ -41,85 +41,122 @@
 static void 
 tcpecho_thread(void *arg)//server
 {
-  struct netconn *conn, *newconn;
-  err_t err;
-  char menu[] = "Selecciona una opcion";
-  char menu_option1[] = "Detener/Reproducir audio";
-  char menu_option2[] = "Seleccionar audio";
-  char menu_option3[] = "Desplegar estadisticas de la comunicacion";
+	struct netconn *conn, *newconn;
+	err_t err;
+	char menu[] = "Selecciona una opcion:\n";
+	char menu_option1[] = "1) Detener/Reproducir audio\n";
+	char menu_option2[] = "2) Seleccionar audio\n";
+	char menu_option3[] = "3) Desplegar estadisticas de la comunicacion\n";
+	char menu_option4[] = "Opcion no valida\n";
 
 
 
-  LWIP_UNUSED_ARG(arg);
+	LWIP_UNUSED_ARG(arg);
 
-
-  /* Create a new connection identifier. */
-  /* Bind connection to well known port number 7. */
+	/* Create a new connection identifier. */
+	/* Bind connection to well known port number 7. */
 #if LWIP_IPV6
-  conn = netconn_new(NETCONN_TCP_IPV6);
-  netconn_bind(conn, IP6_ADDR_ANY, 50005);
+	conn = netconn_new(NETCONN_TCP_IPV6);
+	netconn_bind(conn, IP6_ADDR_ANY, 50005);
 #else /* LWIP_IPV6 */
-  conn = netconn_new(NETCONN_TCP);
-  netconn_bind(conn, IP_ADDR_ANY, 50005);
+	conn = netconn_new(NETCONN_TCP);
+	netconn_bind(conn, IP_ADDR_ANY, 50005);
 #endif /* LWIP_IPV6 */
-  LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
+	LWIP_ERROR("tcpecho: invalid conn", (conn != NULL), return;);
 
-  /* Tell connection to go into listening mode. */
-  netconn_listen(conn);
+	/* Tell connection to go into listening mode. */
+	netconn_listen(conn);
 
-  while (1) {
+	while (1) {
 
-    /* Grab new connection. */
-    err = netconn_accept(conn, &newconn);
-    err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
-    err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
-    err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
-    err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
+		/* Grab new connection. */
+		err = netconn_accept(conn, &newconn);
+		err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
+		err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
+		err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
+		err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
 
-    /*printf("accepted new connection %p\n", newconn);*/
-    /* Process the new connection. */
-    if (err == ERR_OK) {
-      struct netbuf *buf;
-      struct netbuf *buf2;
-      void *data;
-      void *data2;
-      u16_t len;
-      char str[] = "hola";
-      data2 = str;
-      
-      while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
-        /*printf("Recved\n");*/
-        do {
-             netbuf_data(buf, &data, &len);
-             err = netconn_write(newconn, "hola", 4, NETCONN_COPY);
+		/*printf("accepted new connection %p\n", newconn);*/
+		/* Process the new connection. */
+		if (err == ERR_OK) {
+			struct netbuf *buf;
+			struct netbuf *buf2;
+			void *data;
+			void *data2;
+			u16_t len;
+			char str[] = "hola";
+			data2 = str;
+			uint8_t* opcion;
+			uint8_t dato;
 
-         // err = netconn_write(newconn, data, len, NETCONN_COPY);
-//             netconn_sendto();
+			while ((err = netconn_recv(newconn, &buf)) == ERR_OK) {
+				/*printf("Recved\n");*/
+				do {
+					netbuf_data(buf, &data, &len);
+					opcion=(uint8_t*)data;
+					dato=*opcion;
+					PRINTF(":%d",dato);
+					err = netconn_write(newconn, data, len, NETCONN_COPY);
+					switch (dato-48){
+					case 1:
+						err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
+						break;
+
+					case 2:
+						err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
+						break;
+
+					case 3:
+						err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
+						break;
+
+					default:
+						err = netconn_write(newconn, menu_option4, sizeof(menu_option4)/sizeof(menu_option4[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu,  sizeof(menu)/sizeof(menu[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option1, sizeof(menu_option1)/sizeof(menu_option1[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option2, sizeof(menu_option2)/sizeof(menu_option2[0]), NETCONN_COPY);
+						err = netconn_write(newconn, menu_option3, sizeof(menu_option3)/sizeof(menu_option3[0]), NETCONN_COPY);
+
+					}
+
+
+
+					// err = netconn_write(newconn, data, len, NETCONN_COPY);
+					//             netconn_sendto();
 #if 0
-            if (err != ERR_OK) {
-              printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));
-            }
+					if (err != ERR_OK) {
+						printf("tcpecho: netconn_write: error \"%s\"\n", lwip_strerr(err));
+					}
 #endif
-        } while (netbuf_next(buf) >= 0);
-        netbuf_delete(buf);
+				} while (netbuf_next(buf) >= 0);
+				netbuf_delete(buf);
 
 
 
-        netbuf_data(buf2, &data2, &len);
-        netconn_write(newconn, data2, len, NETCONN_COPY);
-      }
-      /*printf("Got EOF, looping\n");*/ 
-      /* Close connection and discard connection identifier. */
-//      netconn_close(newconn);
-//      netconn_delete(newconn);
-    }
-  }
+			//	netbuf_data(buf2, &data2, &len);
+				//netconn_write(newconn, data2, len, NETCONN_COPY);
+			}
+			/*printf("Got EOF, looping\n");*/
+			/* Close connection and discard connection identifier. */
+			//      netconn_close(newconn);
+			//      netconn_delete(newconn);
+		}
+	}
 }
 /*-----------------------------------------------------------------------------------*/
 void
 tcpecho_init(void)
 {
-  sys_thread_new("tcpecho_thread", tcpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
+	sys_thread_new("tcpecho_thread", tcpecho_thread, NULL, DEFAULT_THREAD_STACKSIZE, DEFAULT_THREAD_PRIO);
 }
 /*-----------------------------------------------------------------------------------*/
 
